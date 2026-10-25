@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#060a14">
+<title>Salvatore Di Dio – CSAgent et CSFlow</title>
+<meta name="description" content="Deux outils libres pour automatiser sans perdre le contrôle : CSAgent, un agent de code qui demande avant d'agir, et CSFlow, un orchestrateur de workflows où l'humain valide les étapes qui comptent.">
+<meta property="og:title" content="Salvatore Di Dio – CSAgent et CSFlow">
+<meta property="og:description" content="Un agent de code qui demande d'abord, et des workflows où l'humain décide.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23060a14'/%3E%3Cpath d='M9 22V10h6.5a4 4 0 0 1 0 8H13' fill='none' stroke='%235cc8ff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='23' cy='22' r='2.4' fill='%235eead4'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#060a14;
+  --bg2:#0a1124;
+  --panel:#0e1730;
+  --panel2:#121d3b;
+  --ink:#eaf1ff;
+  --muted:#b4c0da;          /* 10:1 sur --bg */
+  --rule:#243257;
+  --agent:#5cc8ff;          /* cyan électrique */
+  --agent-tint:rgba(92,200,255,.14);
+  --agent-ink:#04121f;
+  --flow:#5eead4;           /* menthe néon */
+  --flow-tint:rgba(94,234,212,.14);
+  --flow-ink:#03150f;
+  --violet:#b69cff;
+  --sans:"Avenir Next","Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --gutter:clamp(1rem,4vw,2rem);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--bg)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.herobg::before{animation:none!important}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:1.0625rem;line-height:1.65}
+img,svg{max-width:100%}
+a{color:var(--agent);text-underline-offset:.2em;text-decoration-thickness:.08em}
+a:hover{text-decoration-thickness:.16em;color:#fff}
+:focus-visible{outline:3px solid #ffd166;outline-offset:3px;border-radius:2px}
+.skip{position:absolute;left:var(--gutter);top:-4rem;background:#ffd166;color:#111;padding:.7rem 1rem;border-radius:0 0 .5rem .5rem;z-index:10;text-decoration:none;font-weight:700}
+.skip:focus{top:0}
+.wrap{width:100%;max-width:72rem;margin-inline:auto;padding-inline:var(--gutter)}
+code{font-family:var(--mono);font-size:.88em;background:rgba(148,170,230,.16);color:#d7e3ff;padding:.08em .38em;border-radius:.3rem;overflow-wrap:anywhere}
+
+/* en-tête */
+.top{background:rgba(6,10,20,.88);border-bottom:1px solid var(--rule);position:relative;z-index:5;backdrop-filter:blur(8px)}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.25rem 1.5rem;min-height:4rem;padding-block:.5rem}
+.me{display:inline-flex;align-items:center;min-height:2.75rem;border-radius:.5rem;text-decoration:none}
+.logo{display:block;width:68px;height:43px;overflow:visible}
+.spark{animation:spark 2.6s ease-in-out infinite}
+.spark.s2{animation-delay:1.3s}
+@keyframes spark{0%,100%{opacity:.35}50%{opacity:1}}
+.top nav ul{display:flex;flex-wrap:wrap;gap:0 .25rem;margin:0;padding:0;list-style:none}
+.top nav a{display:inline-flex;align-items:center;min-height:2.75rem;padding:0 .8rem;color:var(--muted);text-decoration:none;border-radius:.4rem}
+.top nav a:hover{background:rgba(92,200,255,.12);color:#fff}
+
+/* fond animé */
+.herobg{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 50% 0%,#0d1a3d 0%,var(--bg) 70%)}
+.herobg::before{content:"";position:absolute;inset:-20%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(34% 44% at 15% 28%,rgba(34,211,238,.34),transparent 70%),
+    radial-gradient(34% 46% at 85% 20%,rgba(139,92,246,.40),transparent 70%),
+    radial-gradient(38% 48% at 70% 88%,rgba(45,212,191,.26),transparent 70%),
+    radial-gradient(30% 40% at 28% 94%,rgba(59,130,246,.34),transparent 70%);
+  animation:aurora 24s ease-in-out infinite alternate}
+@keyframes aurora{from{transform:translate3d(-3%,-2%,0) scale(1)}to{transform:translate3d(3%,3%,0) scale(1.08)}}
+.herobg::after{content:"";position:absolute;inset:auto 0 0 0;height:6rem;background:linear-gradient(transparent,var(--bg));pointer-events:none;z-index:0}
+.herobg>.wrap{position:relative;z-index:1}
+.herobg>.nn{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;pointer-events:none}
+
+/* hero */
+.hero{padding-block:clamp(2.75rem,8vw,6rem) clamp(2.25rem,5vw,3.75rem)}
+.hero h1{font-weight:300;font-size:clamp(2.3rem,6.4vw,4.4rem);line-height:1.04;letter-spacing:-.025em;margin:0 0 1.4rem;max-width:18ch;text-shadow:0 0 40px rgba(92,200,255,.35)}
+.hero h1 em{font-style:normal;font-weight:700;background:linear-gradient(90deg,var(--agent),var(--flow));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.lead{font-size:clamp(1.1rem,2.2vw,1.3rem);color:#cdd8f0;max-width:44rem;margin:0 0 2.25rem}
+.pair{display:grid;grid-template-columns:1fr;gap:1rem;margin:0;padding:0;list-style:none}
+@media (min-width:44rem){.pair{grid-template-columns:1fr 1fr;gap:1.25rem}}
+.pair li{border:1px solid var(--rule);border-top:3px solid var(--c);border-radius:.9rem;padding:1.1rem 1.3rem 1.3rem;background:rgba(14,23,48,.78);backdrop-filter:blur(6px);box-shadow:0 0 0 1px rgba(0,0,0,.2),0 18px 40px -24px var(--c)}
+.pair li.a{--c:var(--agent)}
+.pair li.f{--c:var(--flow)}
+.pair b{display:block;font-size:1.7rem;font-weight:600;letter-spacing:-.01em;line-height:1.2;color:var(--c)}
+.pair span{display:block;color:var(--muted);margin:.3rem 0 .9rem}
+.pair a{font-weight:600;color:var(--c)}
+
+/* sections */
+section{padding-block:clamp(2.5rem,6vw,4.5rem)}
+section + section{border-top:1px solid var(--rule)}
+h2{font-weight:300;font-size:clamp(1.7rem,3.8vw,2.5rem);line-height:1.12;margin:0 0 1rem;letter-spacing:-.02em}
+h3{font-size:1.05rem;font-weight:600;margin:1.75rem 0 .5rem;color:#fff}
+.intro{max-width:46rem;color:var(--muted);margin:0 0 2rem}
+.reasons{display:grid;gap:1.25rem;grid-template-columns:1fr;margin:0;padding:0;list-style:none}
+@media (min-width:52rem){.reasons{grid-template-columns:repeat(3,1fr)}}
+.reasons li{border:1px solid var(--rule);border-radius:.9rem;background:linear-gradient(180deg,var(--panel2),var(--panel));padding:1.2rem 1.3rem}
+.reasons b{display:block;font-size:1.2rem;font-weight:600;line-height:1.25;margin-bottom:.45rem;color:#fff}
+.reasons li:nth-child(1) b{color:var(--agent)}
+.reasons li:nth-child(2) b{color:var(--flow)}
+.reasons li:nth-child(3) b{color:var(--violet)}
+.reasons span{color:var(--muted)}
+
+/* projets */
+.project{--c:var(--agent);--t:var(--agent-tint);--ci:var(--agent-ink)}
+.project.flow{--c:var(--flow);--t:var(--flow-tint);--ci:var(--flow-ink)}
+.project a{color:var(--c)}
+.tag{display:inline-block;background:var(--t);color:var(--c);border:1px solid var(--c);font-family:var(--mono);font-weight:600;padding:.2rem .75rem;border-radius:2rem;font-size:.9rem;margin:0 0 .9rem}
+.cols{display:grid;gap:2rem 3rem;grid-template-columns:1fr}
+@media (min-width:56rem){.cols{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}}
+.why{border-left:3px solid var(--c);padding:.25rem 0 .25rem 1.1rem;margin:0 0 1.5rem;max-width:42rem;color:#d3ddf4}
+.why p{margin:0 0 .75rem}
+.why strong{color:#fff}
+.feat{margin:0;padding:0;list-style:none;max-width:42rem}
+.feat li{padding:.6rem 0 .6rem 1.6rem;position:relative;border-bottom:1px solid var(--rule);color:#d3ddf4}
+.feat li::before{content:"";position:absolute;left:.15rem;top:1.25rem;width:.55rem;height:.55rem;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:.4rem 1.25rem;margin:1.5rem 0;padding:1rem 1.2rem;background:var(--panel);border:1px solid var(--rule);border-radius:.8rem}
+.facts dt{color:var(--muted)}
+.facts dd{margin:0;font-weight:600;color:#fff}
+.docs{align-self:start;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--rule);border-top:3px solid var(--c);border-radius:.9rem;padding:1.1rem 1.3rem 1.3rem;box-shadow:0 24px 50px -32px var(--c)}
+.docs h3{margin:0 0 .5rem;font-size:1.2rem;color:var(--c)}
+.docs ul{margin:0;padding:0;list-style:none}
+.docs li{border-top:1px solid var(--rule)}
+.docs li:first-child{border-top:0}
+.docs a{display:block;padding:.65rem 0;font-weight:600;text-decoration:none;color:var(--c)}
+.docs a:hover,.docs a:focus-visible{text-decoration:underline;color:#fff}
+.docs small{display:block;color:var(--muted);font-weight:400;font-size:.95rem;line-height:1.4;margin-top:.1rem}
+.btns{display:flex;flex-wrap:wrap;gap:.75rem;margin:1.5rem 0 0}
+.btn{display:inline-flex;align-items:center;min-height:2.9rem;padding:0 1.25rem;border-radius:.6rem;font-weight:700;text-decoration:none;border:2px solid var(--c)}
+.btn.main{background:var(--c);color:var(--ci)!important;box-shadow:0 0 24px -6px var(--c)}
+.btn.main:hover{filter:brightness(1.12)}
+.btn.alt{background:transparent;color:var(--c)}
+.btn.alt:hover{background:var(--t)}
+
+/* ensemble */
+.chain{display:flex;flex-direction:column;gap:0;margin:2rem 0 1.5rem;padding:0;list-style:none}
+.chain li{position:relative;background:var(--panel);border:1px solid var(--rule);border-left:4px solid var(--c);border-radius:.7rem;padding:.9rem 1.1rem}
+.chain li b{display:block;color:var(--c)}
+.chain li span{color:var(--muted);font-size:.98rem}
+.chain li + li{margin-top:1.6rem}
+.chain li + li::before{content:"";position:absolute;left:1.5rem;top:-1.6rem;height:1.6rem;border-left:2px solid var(--muted)}
+.chain li + li::after{content:"";position:absolute;left:calc(1.5rem - 5px);top:-.4rem;border:6px solid transparent;border-top:8px solid var(--muted);border-bottom:0}
+.chain .u{--c:#fff}
+.chain .a{--c:var(--agent)}
+.chain .f{--c:var(--flow)}
+@media (min-width:60rem){
+  .chain{flex-direction:row;align-items:stretch}
+  .chain li{flex:1}
+  .chain li + li{margin:0 0 0 1.75rem}
+  .chain li + li::before{left:-1.75rem;top:50%;height:0;width:1.75rem;border-left:0;border-top:2px solid var(--muted)}
+  .chain li + li::after{left:-.75rem;top:calc(50% - 6px);border:6px solid transparent;border-left:8px solid var(--muted);border-right:0}
+}
+.note{max-width:46rem;border:1px solid #7a5a1e;border-left:4px solid #ffd166;border-radius:.6rem;background:rgba(255,209,102,.09);color:#f3e6c4;padding:.8rem 1rem;margin:1.5rem 0 0}
+.note strong{color:#ffd166}
+#ensemble .btn.main{--c:#fff;--ci:#060a14}
+
+footer{background:#03060d;border-top:1px solid var(--rule);color:#c5d0ea;padding-block:2.5rem;margin-top:1rem}
+footer a{color:#fff}
+footer .wrap{display:grid;gap:1.25rem 3rem;grid-template-columns:1fr}
+@media (min-width:48rem){footer .wrap{grid-template-columns:1.2fr 1fr}}
+footer p{margin:0}
+footer ul{margin:0;padding:0;list-style:none}
+footer li{padding:.15rem 0}
+.people{display:flex;flex-wrap:wrap;gap:1rem 2rem;margin:1rem 0 0!important}
+.people li{display:flex;align-items:center;gap:.8rem}
+.people img{width:56px;height:56px;border-radius:50%;background:#1b2745;border:2px solid var(--agent);box-shadow:0 0 16px -2px var(--agent);object-fit:cover}
+.people small{display:block;color:#b4c0da}
+footer .small{color:#b4c0da;font-size:.95rem}
+
+@media print{.top nav,.skip,.btns,.nn{display:none}body,html{background:#fff;color:#000}.herobg::before,.herobg::after{display:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="me" href="#debut" aria-label="CSAgent et CSFlow, retour en haut de la page">
+      <svg class="logo" viewBox="5 3 54 34" width="68" height="43" role="img" aria-hidden="true" focusable="false">
+        <defs>
+          <clipPath id="lk"><rect x="25" y="23" width="14" height="17"/></clipPath>
+          <filter id="gl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <g fill="none" stroke-width="3.2" stroke-linecap="round" filter="url(#gl)">
+          <circle cx="24" cy="20" r="13" stroke="#5cc8ff"/>
+          <circle cx="40" cy="20" r="13" stroke="#5eead4"/>
+          <circle cx="24" cy="20" r="13" stroke="#5cc8ff" clip-path="url(#lk)"/>
+        </g>
+        <circle class="spark" cx="32" cy="9.8" r="2.1" fill="#fff"/>
+        <circle class="spark s2" cx="32" cy="30.2" r="2.1" fill="#fff"/>
+      </svg>
+    </a>
+    <nav aria-label="Sections de la page">
+      <ul>
+        <li><a href="#pourquoi">Pourquoi</a></li>
+        <li><a href="#csagent">CSAgent</a></li>
+        <li><a href="#csflow">CSFlow</a></li>
+        <li><a href="#ensemble">Ensemble</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="contenu">
+  <div class="herobg" id="vanta">
+  <div class="wrap hero" id="debut">
+    <h1>L’IA qui agit, <em>l’humain qui décide.</em></h1>
+    <p class="lead">Deux outils libres pour automatiser le travail sans en perdre le contrôle : un agent de code qui demande avant d’écrire, et des workflows où une personne valide les étapes qui comptent.</p>
+    <ul class="pair" aria-label="Les deux projets">
+      <li class="a">
+        <b>CSAgent</b>
+        <span>L’agent de code qui demande d’abord. Windows, Linux, macOS.</span>
+        <a href="#csagent">Découvrir CSAgent</a>
+      </li>
+      <li class="f">
+        <b>CSFlow</b>
+        <span>Les workflows où l’humain garde la main. Python et YAML.</span>
+        <a href="#csflow">Découvrir CSFlow</a>
+      </li>
+    </ul>
+  </div>
+  </div>
+
+  <section id="pourquoi" aria-labelledby="h-pourquoi">
+    <div class="wrap">
+      <h2 id="h-pourquoi">Pourquoi ces deux projets</h2>
+      <p class="intro">Les assistants d’IA savent déjà lire du code, écrire des fichiers et lancer des commandes. Le difficile est de leur laisser ce pouvoir sans y perdre en confiance. Ces projets partent de trois convictions.</p>
+      <ul class="reasons">
+        <li><b>Voir, puis autoriser</b><span>Un agent qui modifie vos fichiers doit montrer ce qu’il fait et attendre votre accord. CSAgent confirme les actions destructrices, restreint les chemins et filtre les commandes dangereuses.</span></li>
+        <li><b>Les chiffres ne se devinent pas</b><span>Dans un processus métier, un calcul doit être exact. CSFlow confie les calculs à Python et réserve l’IA à ce qu’elle fait bien : lire des notes libres, rédiger, proposer une correction.</span></li>
+        <li><b>Rester maître de ses outils</b><span>CSAgent s’appuie sur la seule bibliothèque de base de .NET, sans dépendance NuGet, et parle à tout serveur compatible OpenAI (API Albert, Ollama, OpenRouter). CSFlow se livre en un exécutable qui n’exige pas Python.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="csagent" class="project" aria-labelledby="h-csagent">
+    <div class="wrap">
+      <p class="tag">Projet 1 : agent de code</p>
+      <h2 id="h-csagent">CSAgent, l’agent de code qui demande d’abord</h2>
+      <div class="cols">
+        <div>
+          <div class="why">
+            <p><strong>La raison d’être.</strong> Un agent autonome est utile quand on peut lui confier une tâche sans surveiller chaque geste, et dangereux quand on ne sait pas ce qu’il a touché. CSAgent lit, modifie et exécute des choses dans votre dossier, pas à pas, et demande avant d’écrire, de déplacer ou de supprimer.</p>
+            <p>Il se contente d’une clé d’accès à un serveur compatible OpenAI : on choisit son modèle, y compris un modèle local, plutôt que de dépendre d’un seul fournisseur.</p>
+          </div>
+          <h3>Ce qu’il sait faire</h3>
+          <ul class="feat">
+            <li>Quatre façons de l’utiliser : terminal, interface web, interface légère, et mode API sans interface pour les orchestrateurs.</li>
+            <li>43 outils intégrés : fichiers, shell, git, recherche, audio, e-mail, avec confirmation des actions destructrices.</li>
+            <li>Client de serveurs MCP : branchez-lui d’autres outils, dont CSFlow.</li>
+            <li>Mémoire qui limite l’amnésie sur les longues sessions, et skills (fiches de procédures) chargées à la demande.</li>
+            <li>Choix automatique du modèle, reprise après les erreurs 429, passage derrière un proxy d’entreprise.</li>
+          </ul>
+          <dl class="facts" aria-label="Fiche du projet CSAgent">
+            <dt>Langage</dt><dd>C# (.NET 10), sans dépendance NuGet</dd>
+            <dt>Plateformes</dt><dd>Windows, Linux, macOS</dd>
+            <dt>Licence</dt><dd>MIT</dd>
+            <dt>Version</dt><dd>0.9.14</dd>
+          </dl>
+          <div class="btns">
+            <a class="btn main" href="https://github.com/artydev/CSAgent">Dépôt GitHub</a>
+            <a class="btn alt" href="https://artydev.github.io/csagent/">Site du projet</a>
+          </div>
+        </div>
+        <aside class="docs" aria-labelledby="d-csagent">
+          <h3 id="d-csagent">Documentation de CSAgent</h3>
+          <ul>
+            <li><a href="https://artydev.github.io/csagent/guide-csagent.html">Guide d’utilisation<small>Prise en main, modes, outils, sécurité.</small></a></li>
+            <li><a href="https://artydev.github.io/csagent/slides.html">Présentation en diapositives<small>L’agent de code qui demande d’abord, en bref.</small></a></li>
+            <li><a href="https://artydev.github.io/csagent/releases.html">Historique des versions<small>Les versions successives et leurs nouveautés.</small></a></li>
+            <li><a href="https://artydev.github.io/csagent/gestion-429.html">Gestion des erreurs 429<small>Limites par minute ou par jour, délais, bascule de modèle.</small></a></li>
+            <li><a href="https://github.com/artydev/CSAgent/blob/main/README.md">README complet<small>Référence des arguments, variables et outils.</small></a></li>
+            <li><a href="https://github.com/artydev/CSAgent/tree/main/releases">Notes de version détaillées<small>Une page par version : changements et mise à jour.</small></a></li>
+            <li><a href="https://github.com/artydev/CSAgent/tree/main/skills">Skills fournis<small>Procédures que l’agent charge selon la demande.</small></a></li>
+            <li><a href="https://github.com/artydev/CSAgent/tree/main/python">Client Python<small>Piloter <code>csagent --api</code> depuis un script.</small></a></li>
+            <li><a href="https://github.com/artydev/CSAgent/blob/main/LICENSE">Licence MIT</a></li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section id="csflow" class="project flow" aria-labelledby="h-csflow">
+    <div class="wrap">
+      <p class="tag">Projet 2 : orchestrateur de workflows</p>
+      <h2 id="h-csflow">CSFlow, les workflows où l’humain garde la main</h2>
+      <div class="cols">
+        <div>
+          <div class="why">
+            <p><strong>La raison d’être.</strong> Beaucoup de tâches mêlent trois ingrédients : un calcul qui doit être juste, un texte qu’il faut lire ou rédiger, et une décision qui revient à une personne. CSFlow les enchaîne dans un simple fichier YAML : Python calcule, CSAgent raisonne, l’humain valide.</p>
+            <p>Exemple fourni : préparer un comité de pilotage. Les indicateurs sont calculés exactement, l’agent tire risques et actions de notes libres, et rien n’est diffusé sans l’accord du chef de projet.</p>
+          </div>
+          <h3>Ce qu’il sait faire</h3>
+          <ul class="feat">
+            <li>Workflows en YAML, relisibles en revue de code, avec onze types d’étapes : agent, shell, python, fichiers, HTTP, validation humaine…</li>
+            <li>Branches conditionnelles et variables d’une étape à l’autre.</li>
+            <li>Vérification avant lancement (types inconnus, clés mal écrites, étapes manquantes), avec complétion dans VS Code.</li>
+            <li>Interface graphique : graphe du workflow, détail de chaque étape, éditeur YAML, journal en direct, pensée pour l’accessibilité au clavier.</li>
+            <li>Exécutable unique sans Python à installer, pour Windows et Linux.</li>
+            <li>Mode MCP : CSAgent peut lister, vérifier et lancer vos workflows.</li>
+          </ul>
+          <dl class="facts" aria-label="Fiche du projet CSFlow">
+            <dt>Langage</dt><dd>Python 3.10 ou plus récent</dd>
+            <dt>Plateformes</dt><dd>Windows, Linux et WSL</dd>
+            <dt>Licence</dt><dd>MIT</dd>
+            <dt>Interface</dt><dd>Navigateur, ou ligne de commande</dd>
+            <dt>Moteur d’IA</dt><dd>CSAgent, ou tout serveur compatible OpenAI via lui</dd>
+          </dl>
+          <div class="btns">
+            <a class="btn main" href="https://github.com/artydev/CSFlow">Dépôt GitHub</a>
+            <a class="btn alt" href="https://github.com/artydev/CSFlow/blob/main/README.md">Lire le README</a>
+          </div>
+        </div>
+        <aside class="docs" aria-labelledby="d-csflow">
+          <h3 id="d-csflow">Documentation de CSFlow</h3>
+          <ul>
+            <li><a href="https://github.com/artydev/CSFlow/blob/main/README.md">README<small>Démarrage rapide Windows et Linux, compilation, mode MCP.</small></a></li>
+            <li><a href="https://github.com/artydev/CSFlow/blob/main/REFERENCE.md">Référence du YAML<small>Tous les types d’étapes, paramètres et variables.</small></a></li>
+            <li><a href="https://github.com/artydev/CSFlow/blob/main/CSFLOW_LLM_GUIDE.md">Guide pour assistants IA<small>Pour qu’un LLM écrive des workflows corrects.</small></a></li>
+            <li><a href="https://github.com/artydev/CSFlow/blob/main/skills/csflow.md">Skill CSAgent « CSFlow Workflows »<small>La procédure que suit CSAgent pour lancer un workflow.</small></a></li>
+            <li><a href="https://github.com/artydev/CSFlow/tree/main/workflows">Workflows de démonstration<small>COPIL, correction automatique, revue de code, tests.</small></a></li>
+            <li><a href="https://github.com/artydev/CSFlow/blob/main/csflow.schema.json">Schéma JSON<small>Autocomplétion et contrôle dans l’éditeur.</small></a></li>
+            <li><a href="https://github.com/artydev/CSFlow/tree/main/tests">Tests automatisés<small>Moteur, nœuds, schéma, serveur MCP.</small></a></li>
+            <li><a href="https://github.com/artydev/CSFlow/blob/main/LICENSE">Licence MIT</a></li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section id="ensemble" aria-labelledby="h-ensemble">
+    <div class="wrap">
+      <h2 id="h-ensemble">Mieux ensemble : CSAgent pilote CSFlow</h2>
+      <p class="intro">Grâce au protocole MCP, vous demandez en langage naturel « lance le rapport de ventes » : CSAgent liste les workflows, en lance un et vous rend compte à chaque étape. Les étapes qui demandent de l’intelligence repartent vers CSAgent.</p>
+      <ol class="chain" aria-label="Chaîne d’exécution en quatre maillons">
+        <li class="u"><b>Vous</b><span>Demandez en français ou en anglais.</span></li>
+        <li class="a"><b>CSAgent interactif</b><span>Vous demande la permission pour chaque appel.</span></li>
+        <li class="f"><b>CSFlow</b><span>Exécute le workflow étape par étape (mode MCP).</span></li>
+        <li class="a"><b>CSAgent worker</b><span>Traite les étapes qui demandent du raisonnement.</span></li>
+      </ol>
+      <p class="note"><strong>À savoir.</strong> Un workflow qui contient une validation humaine n’est jamais lancé par l’agent : vous l’ouvrez dans l’interface de CSFlow et vous approuvez vous-même. Les étapes <code>shell</code> et <code>python</code> d’un workflow ne passent pas par le filtre de commandes de CSAgent : réservez ce mode à des workflows de confiance.</p>
+      <div class="btns">
+        <a class="btn main" style="--c:var(--ink)" href="https://github.com/artydev/CSFlow/blob/main/README.md">Mode MCP : mise en route</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <p class="small">Deux projets libres, en développement actif. CSAgent et CSFlow sont publiés sous licence MIT.</p>
+      <ul class="people" aria-label="Auteur et contributeur">
+        <li>
+          <img src="https://github.com/artydev.png?size=112" width="56" height="56" alt="" loading="lazy">
+          <span><a href="https://github.com/artydev"><strong>Salvatore Di Dio</strong></a><small>Auteur · @artydev</small></span>
+        </li>
+        <li>
+          <img src="https://github.com/virgilejarrige.png?size=112" width="56" height="56" alt="" loading="lazy">
+          <span><a href="https://github.com/virgilejarrige"><strong>Virgile Jarrige</strong></a><small>Contributeur · @virgilejarrige</small></span>
+        </li>
+      </ul>
+    </div>
+    <nav aria-label="Liens du pied de page">
+      <ul>
+        <li><a href="https://github.com/artydev">Profil GitHub</a></li>
+        <li><a href="https://github.com/artydev/CSAgent">Dépôt CSAgent</a></li>
+        <li><a href="https://github.com/artydev/CSFlow">Dépôt CSFlow</a></li>
+        <li><a href="#debut">Haut de page</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+<script>
+/* Fond décoratif : réseau de neurones (couches de nœuds, impulsions qui se propagent).
+   Canvas natif, sans bibliothèque. Image fixe si l'utilisateur préfère moins d'animations. */
+(function () {
+  var host = document.getElementById('vanta');
+  if (!host) return;
+  var cv = document.createElement('canvas');
+  cv.setAttribute('aria-hidden', 'true');
+  cv.className = 'nn';
+  host.insertBefore(cv, host.firstChild);
+  var ctx = cv.getContext('2d');
+  var calm = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var W = 0, H = 0, dpr = 1, nodes = [], edges = [], pulses = [], raf = 0, visible = true, last = 0;
+  var BLUE = '96,165,250', TEAL = '94,234,212', VIOLET = '182,156,255', CYAN = '92,200,255';
+  var HUES = [BLUE, TEAL, VIOLET, CYAN];
+
+  function build() {
+    var r = host.getBoundingClientRect();
+    W = Math.max(1, r.width); H = Math.max(1, r.height);
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    nodes = []; edges = []; pulses = [];
+    var small = W < 700;
+    var sizes = small ? [3, 5, 5, 4, 2] : [4, 7, 8, 7, 4, 2];
+    var layers = sizes.length, padX = W * 0.04, padY = H * 0.1;
+    for (var l = 0; l < layers; l++) {
+      var n = sizes[l], col = [];
+      for (var i = 0; i < n; i++) {
+        var x = padX + (W - 2 * padX) * l / (layers - 1);
+        var y = padY + (H - 2 * padY) * (i + 0.5) / n;
+        x += (Math.sin(l * 7 + i * 3) * 0.5) * 14; y += (Math.cos(l * 5 + i * 2) * 0.5) * 10;
+        var nd = { x: x, y: y, l: l, glow: 0, r: 2.6 + (i % 3) * 0.5 };
+        nodes.push(nd); col.push(nd);
+      }
+      nodes.layer = nodes.layer || []; nodes.layer[l] = col;
+    }
+    for (var l2 = 0; l2 < layers - 1; l2++) {
+      var A = nodes.layer[l2], B = nodes.layer[l2 + 1];
+      for (var i2 = 0; i2 < A.length; i2++) for (var j = 0; j < B.length; j++) {
+        if ((i2 * 5 + j * 3 + l2) % 3 !== 0) edges.push({ a: A[i2], b: B[j], l: l2 });
+      }
+    }
+  }
+
+  function fire() {
+    if (!edges.length) return;
+    var e = edges[(Math.random() * edges.length) | 0];
+    pulses.push({ e: e, t: 0, sp: 0.45 + Math.random() * 0.35, hue: HUES[(Math.random() * 4) | 0] });
+  }
+
+  function draw(dt) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineWidth = 1;
+    for (var i = 0; i < edges.length; i++) {
+      var e = edges[i];
+      ctx.strokeStyle = 'rgba(' + BLUE + ',0.30)';
+      ctx.beginPath(); ctx.moveTo(e.a.x, e.a.y); ctx.lineTo(e.b.x, e.b.y); ctx.stroke();
+    }
+    for (var p = pulses.length - 1; p >= 0; p--) {
+      var q = pulses[p]; q.t += dt * q.sp;
+      var c = q.hue;
+      if (q.t >= 1) {
+        q.e.b.glow = 1; q.e.b.hue = q.hue; pulses.splice(p, 1);
+        var nx = edges.filter(function (k) { return k.a === q.e.b; });
+        if (nx.length && Math.random() < 0.8) {
+          var k = nx[(Math.random() * nx.length) | 0];
+          pulses.push({ e: k, t: 0, sp: 0.45 + Math.random() * 0.35, hue: q.hue });
+        }
+        continue;
+      }
+      var x = q.e.a.x + (q.e.b.x - q.e.a.x) * q.t, y = q.e.a.y + (q.e.b.y - q.e.a.y) * q.t;
+      var t0 = Math.max(0, q.t - 0.18);
+      var x0 = q.e.a.x + (q.e.b.x - q.e.a.x) * t0, y0 = q.e.a.y + (q.e.b.y - q.e.a.y) * t0;
+      var g = ctx.createLinearGradient(x0, y0, x, y);
+      g.addColorStop(0, 'rgba(' + c + ',0)'); g.addColorStop(1, 'rgba(' + c + ',0.95)');
+      ctx.strokeStyle = g; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x, y); ctx.stroke();
+      ctx.fillStyle = 'rgb(' + c + ')'; ctx.shadowColor = 'rgb(' + c + ')'; ctx.shadowBlur = 12;
+      ctx.beginPath(); ctx.arc(x, y, 2.4, 0, 6.283); ctx.fill(); ctx.shadowBlur = 0;
+    }
+    ctx.lineWidth = 1;
+    for (var n = 0; n < nodes.length; n++) {
+      var d = nodes[n]; d.glow = Math.max(0, d.glow - dt * 1.4);
+      if (d.glow > 0) {
+        ctx.fillStyle = 'rgba(' + d.hue + ',' + (0.35 * d.glow) + ')';
+        ctx.beginPath(); ctx.arc(d.x, d.y, d.r + 12 * d.glow, 0, 6.283); ctx.fill();
+      }
+      ctx.fillStyle = '#0a1226';
+      ctx.strokeStyle = 'rgba(' + (d.glow > 0 ? d.hue : BLUE) + ',' + (0.6 + 0.4 * d.glow) + ')';
+      ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, 6.283); ctx.fill(); ctx.stroke();
+    }
+  }
+
+  function frame(ts) {
+    raf = 0;
+    if (!visible || calm.matches) return;
+    var dt = Math.min(0.05, (ts - last) / 1000 || 0.016); last = ts;
+    if (pulses.length < (W < 700 ? 5 : 9) && Math.random() < 0.08) fire();
+    draw(dt);
+    raf = requestAnimationFrame(frame);
+  }
+  function start() { if (!raf && visible && !calm.matches) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+  function still() { for (var i = 0; i < 6; i++) fire(); draw(0); for (var k = 0; k < 3; k++) { var q = pulses[k]; if (q) { q.t = 0.3 + 0.2 * k; } } draw(0.0001); }
+
+  function init() { build(); if (calm.matches) { still(); } else { for (var i = 0; i < 5; i++) fire(); start(); } }
+  var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(init, 150); });
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { visible = en[0].isIntersecting; if (visible) start(); }, { threshold: 0 }).observe(host);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) start(); });
+  if (calm.addEventListener) calm.addEventListener('change', init);
+  init();
+})();
+</script>
+</body>
+</html>
