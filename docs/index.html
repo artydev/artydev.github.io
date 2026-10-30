@@ -292,9 +292,10 @@ footer .small{color:#b4c0da;font-size:.95rem}
           </div>
           <h3>Ce qu’il sait faire</h3>
           <ul class="feat">
-            <li>Workflows en YAML, relisibles en revue de code, avec douze types d’étapes : agent, shell, python, fichiers, HTTP, validation humaine, saisie de texte…</li>
+            <li>Workflows en YAML, relisibles en revue de code, avec quatorze types d’étapes : agent, shell, python, fichiers, HTTP, validation humaine, saisie de texte, appel de serveur MCP…</li>
             <li>Branches conditionnelles et variables d’une étape à l’autre.</li>
             <li>Saisie de texte au clavier ou à la voix : un bouton micro enregistre, CSAgent transcrit avec Whisper, et vous relisez et corrigez le texte avant de continuer.</li>
+            <li>Client MCP intégré : un workflow appelle directement les outils d’un serveur MCP (local ou distant, clé tenue hors du fichier), sans passer par CSAgent. Exemple fourni : le football avec GOAL API.</li>
             <li>Vérification avant lancement (types inconnus, clés mal écrites, étapes manquantes), avec complétion dans VS Code.</li>
             <li>Interface graphique : graphe du workflow, détail de chaque étape, éditeur YAML, journal en direct, pensée pour l’accessibilité au clavier.</li>
             <li>Exécutable unique sans Python à installer, pour Windows et Linux.</li>
@@ -324,7 +325,7 @@ footer .small{color:#b4c0da;font-size:.95rem}
             <li><a href="https://github.com/artydev/CSFlow/blob/main/skills/csflow.md">Skill CSAgent « CSFlow Workflows »<small>La procédure que suit CSAgent pour lancer un workflow.</small></a></li>
             <li><a href="https://github.com/artydev/CSFlow/tree/main/workflows">Workflows de démonstration<small>COPIL, bilan de santé Linux, signalements, candidatures, notes d’enquêteur dictées, correction automatique, revue de code.</small></a></li>
             <li><a href="https://github.com/artydev/CSFlow/blob/main/csflow.schema.json">Schéma JSON<small>Autocomplétion et contrôle dans l’éditeur.</small></a></li>
-            <li><a href="https://github.com/artydev/CSFlow/tree/main/tests">Tests automatisés<small>Moteur, nœuds, schéma, serveur MCP.</small></a></li>
+            <li><a href="https://github.com/artydev/CSFlow/tree/main/tests">Tests automatisés<small>Moteur, nœuds, schéma, serveur et client MCP.</small></a></li>
             <li><a href="https://github.com/artydev/csflow-guide">Dépôt du guide<small>Sources du site, de la documentation et de la vidéo.</small></a></li>
             <li><a href="https://github.com/artydev/CSFlow/blob/main/LICENSE">Licence MIT</a></li>
           </ul>
