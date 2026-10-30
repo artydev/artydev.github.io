@@ -243,7 +243,7 @@ footer .small{color:#b4c0da;font-size:.95rem}
           </div>
           <h3>Ce qu’il sait faire</h3>
           <ul class="feat">
-            <li>Quatre façons de l’utiliser : terminal, interface web, interface légère, et mode API sans interface pour les orchestrateurs.</li>
+            <li>Quatre façons de l’utiliser : terminal, interface web, interface légère, et mode API sans interface pour les orchestrateurs, transcription audio comprise.</li>
             <li>43 outils intégrés : fichiers, shell, git, recherche, audio, e-mail, avec confirmation des actions destructrices.</li>
             <li>Client de serveurs MCP : branchez-lui d’autres outils, dont CSFlow.</li>
             <li>Mémoire qui limite l’amnésie sur les longues sessions, et skills (fiches de procédures) chargées à la demande.</li>
@@ -292,8 +292,9 @@ footer .small{color:#b4c0da;font-size:.95rem}
           </div>
           <h3>Ce qu’il sait faire</h3>
           <ul class="feat">
-            <li>Workflows en YAML, relisibles en revue de code, avec onze types d’étapes : agent, shell, python, fichiers, HTTP, validation humaine…</li>
+            <li>Workflows en YAML, relisibles en revue de code, avec douze types d’étapes : agent, shell, python, fichiers, HTTP, validation humaine, saisie de texte…</li>
             <li>Branches conditionnelles et variables d’une étape à l’autre.</li>
+            <li>Saisie de texte au clavier ou à la voix : un bouton micro enregistre, CSAgent transcrit avec Whisper, et vous relisez et corrigez le texte avant de continuer.</li>
             <li>Vérification avant lancement (types inconnus, clés mal écrites, étapes manquantes), avec complétion dans VS Code.</li>
             <li>Interface graphique : graphe du workflow, détail de chaque étape, éditeur YAML, journal en direct, pensée pour l’accessibilité au clavier.</li>
             <li>Exécutable unique sans Python à installer, pour Windows et Linux.</li>
@@ -321,7 +322,7 @@ footer .small{color:#b4c0da;font-size:.95rem}
             <li><a href="https://github.com/artydev/CSFlow/blob/main/REFERENCE.md">Référence du YAML<small>Tous les types d’étapes, paramètres et variables.</small></a></li>
             <li><a href="https://github.com/artydev/CSFlow/blob/main/CSFLOW_LLM_GUIDE.md">Guide pour assistants IA<small>Pour qu’un LLM écrive des workflows corrects.</small></a></li>
             <li><a href="https://github.com/artydev/CSFlow/blob/main/skills/csflow.md">Skill CSAgent « CSFlow Workflows »<small>La procédure que suit CSAgent pour lancer un workflow.</small></a></li>
-            <li><a href="https://github.com/artydev/CSFlow/tree/main/workflows">Workflows de démonstration<small>COPIL, correction automatique, revue de code, tests.</small></a></li>
+            <li><a href="https://github.com/artydev/CSFlow/tree/main/workflows">Workflows de démonstration<small>COPIL, bilan de santé Linux, signalements, candidatures, notes d’enquêteur dictées, correction automatique, revue de code.</small></a></li>
             <li><a href="https://github.com/artydev/CSFlow/blob/main/csflow.schema.json">Schéma JSON<small>Autocomplétion et contrôle dans l’éditeur.</small></a></li>
             <li><a href="https://github.com/artydev/CSFlow/tree/main/tests">Tests automatisés<small>Moteur, nœuds, schéma, serveur MCP.</small></a></li>
             <li><a href="https://github.com/artydev/csflow-guide">Dépôt du guide<small>Sources du site, de la documentation et de la vidéo.</small></a></li>
@@ -342,7 +343,7 @@ footer .small{color:#b4c0da;font-size:.95rem}
         <li class="f"><b>CSFlow</b><span>Exécute le workflow étape par étape (mode MCP).</span></li>
         <li class="a"><b>CSAgent worker</b><span>Traite les étapes qui demandent du raisonnement.</span></li>
       </ol>
-      <p class="note"><strong>À savoir.</strong> Un workflow qui contient une validation humaine n’est jamais lancé par l’agent : vous l’ouvrez dans l’interface de CSFlow et vous approuvez vous-même. Les étapes <code>shell</code> et <code>python</code> d’un workflow ne passent pas par le filtre de commandes de CSAgent : réservez ce mode à des workflows de confiance.</p>
+      <p class="note"><strong>À savoir.</strong> Un workflow qui contient une validation humaine ou une saisie de texte n’est jamais lancé par l’agent : vous l’ouvrez dans l’interface de CSFlow et vous approuvez ou saisissez vous-même. Les étapes <code>shell</code> et <code>python</code> d’un workflow ne passent pas par le filtre de commandes de CSAgent : réservez ce mode à des workflows de confiance.</p>
       <div class="btns">
         <a class="btn main" style="--c:var(--ink)" href="https://github.com/artydev/CSFlow/blob/main/README.md">Mode MCP : mise en route</a>
       </div>
