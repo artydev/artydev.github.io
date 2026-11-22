@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#060a14">
-<title>Salvatore Di Dio – CSAgent et CSFlow</title>
-<meta name="description" content="Deux outils libres pour automatiser sans perdre le contrôle : CSAgent, un agent de code qui demande avant d'agir, et CSFlow, un orchestrateur de workflows où l'humain valide les étapes qui comptent.">
-<meta property="og:title" content="Salvatore Di Dio – CSAgent et CSFlow">
+<title>Salvatore Di Dio – CSAgent et FlowPortal</title>
+<meta name="description" content="Deux outils libres pour automatiser sans perdre le contrôle : CSAgent, un agent de code qui demande avant d'agir, et FlowPortal, un portail de workflows où l'humain valide les étapes qui comptent.">
+<meta property="og:title" content="Salvatore Di Dio – CSAgent et FlowPortal">
 <meta property="og:description" content="Un agent de code qui demande d'abord, et des workflows où l'humain décide.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23060a14'/%3E%3Cpath d='M9 22V10h6.5a4 4 0 0 1 0 8H13' fill='none' stroke='%235cc8ff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='23' cy='22' r='2.4' fill='%235eead4'/%3E%3C/svg%3E">
@@ -173,7 +173,7 @@ footer .small{color:#b4c0da;font-size:.95rem}
 
 <header class="top">
   <div class="wrap">
-    <a class="me" href="#debut" aria-label="CSAgent et CSFlow, retour en haut de la page">
+    <a class="me" href="#debut" aria-label="CSAgent et FlowPortal, retour en haut de la page">
       <svg class="logo" viewBox="5 3 54 34" width="68" height="43" role="img" aria-hidden="true" focusable="false">
         <defs>
           <clipPath id="lk"><rect x="25" y="23" width="14" height="17"/></clipPath>
@@ -192,7 +192,7 @@ footer .small{color:#b4c0da;font-size:.95rem}
       <ul>
         <li><a href="#pourquoi">Pourquoi</a></li>
         <li><a href="#csagent">CSAgent</a></li>
-        <li><a href="#csflow">CSFlow</a></li>
+        <li><a href="#csflow">FlowPortal</a></li>
         <li><a href="#ensemble">Ensemble</a></li>
       </ul>
     </nav>
@@ -211,9 +211,9 @@ footer .small{color:#b4c0da;font-size:.95rem}
         <a href="#csagent">Découvrir CSAgent</a>
       </li>
       <li class="f">
-        <b>CSFlow</b>
+        <b>FlowPortal</b>
         <span>Les workflows où l’humain garde la main. Python et YAML.</span>
-        <a href="#csflow">Découvrir CSFlow</a>
+        <a href="#csflow">Découvrir FlowPortal</a>
       </li>
     </ul>
   </div>
@@ -225,8 +225,8 @@ footer .small{color:#b4c0da;font-size:.95rem}
       <p class="intro">Les assistants d’IA savent déjà lire du code, écrire des fichiers et lancer des commandes. Le difficile est de leur laisser ce pouvoir sans y perdre en confiance. Ces projets partent de trois convictions.</p>
       <ul class="reasons">
         <li><b>Voir, puis autoriser</b><span>Un agent qui modifie vos fichiers doit montrer ce qu’il fait et attendre votre accord. CSAgent confirme les actions destructrices, restreint les chemins et filtre les commandes dangereuses.</span></li>
-        <li><b>Les chiffres ne se devinent pas</b><span>Dans un processus métier, un calcul doit être exact. CSFlow confie les calculs à Python et réserve l’IA à ce qu’elle fait bien : lire des notes libres, rédiger, proposer une correction.</span></li>
-        <li><b>Rester maître de ses outils</b><span>CSAgent s’appuie sur la seule bibliothèque de base de .NET, sans dépendance NuGet, et parle à tout serveur compatible OpenAI (API Albert, Ollama, OpenRouter). CSFlow se livre en un exécutable qui n’exige pas Python.</span></li>
+        <li><b>Les chiffres ne se devinent pas</b><span>Dans un processus métier, un calcul doit être exact. FlowPortal confie les calculs à Python et réserve l’IA à ce qu’elle fait bien : lire des notes libres, rédiger, proposer une correction.</span></li>
+        <li><b>Rester maître de ses outils</b><span>CSAgent s’appuie sur la seule bibliothèque de base de .NET, sans dépendance NuGet, et parle à tout serveur compatible OpenAI (API Albert, Ollama, OpenRouter). FlowPortal se livre en un exécutable qui n’exige pas Python.</span></li>
       </ul>
     </div>
   </section>
@@ -245,7 +245,7 @@ footer .small{color:#b4c0da;font-size:.95rem}
           <ul class="feat">
             <li>Quatre façons de l’utiliser : terminal, interface web, interface légère, et mode API sans interface pour les orchestrateurs, transcription audio comprise.</li>
             <li>43 outils intégrés : fichiers, shell, git, recherche, audio, e-mail, avec confirmation des actions destructrices.</li>
-            <li>Client de serveurs MCP : branchez-lui d’autres outils, dont CSFlow.</li>
+            <li>Client de serveurs MCP : branchez-lui d’autres outils, dont FlowPortal.</li>
             <li>Mémoire qui limite l’amnésie sur les longues sessions, et skills (fiches de procédures) chargées à la demande.</li>
             <li>Choix automatique du modèle, reprise après les erreurs 429, passage derrière un proxy d’entreprise.</li>
           </ul>
@@ -253,7 +253,7 @@ footer .small{color:#b4c0da;font-size:.95rem}
             <dt>Langage</dt><dd>C# (.NET 10), sans dépendance NuGet</dd>
             <dt>Plateformes</dt><dd>Windows, Linux, macOS</dd>
             <dt>Licence</dt><dd>MIT</dd>
-            <dt>Version</dt><dd>0.9.14</dd>
+            <dt>Version</dt><dd>0.9.20</dd>
           </dl>
           <div class="btns">
             <a class="btn main" href="https://github.com/artydev/CSAgent">Dépôt GitHub</a>
@@ -283,25 +283,27 @@ footer .small{color:#b4c0da;font-size:.95rem}
   <section id="csflow" class="project flow" aria-labelledby="h-csflow">
     <div class="wrap">
       <p class="tag">Projet 2 : orchestrateur de workflows</p>
-      <h2 id="h-csflow">CSFlow, les workflows où l’humain garde la main</h2>
+      <h2 id="h-csflow">FlowPortal, les workflows où l’humain garde la main</h2>
       <div class="cols">
         <div>
           <div class="why">
-            <p><strong>La raison d’être.</strong> Beaucoup de tâches mêlent trois ingrédients : un calcul qui doit être juste, un texte qu’il faut lire ou rédiger, et une décision qui revient à une personne. CSFlow les enchaîne dans un simple fichier YAML : Python calcule, CSAgent raisonne, l’humain valide.</p>
+            <p><strong>La raison d’être.</strong> Beaucoup de tâches mêlent trois ingrédients : un calcul qui doit être juste, un texte qu’il faut lire ou rédiger, et une décision qui revient à une personne. FlowPortal (moteur CSFlow) les enchaîne dans un simple fichier YAML : Python calcule, CSAgent raisonne, l’humain valide.</p>
             <p>Exemple fourni : préparer un comité de pilotage. Les indicateurs sont calculés exactement, l’agent tire risques et actions de notes libres, et rien n’est diffusé sans l’accord du chef de projet.</p>
           </div>
           <h3>Ce qu’il sait faire</h3>
           <ul class="feat">
+            <li>Portail local : chaque workflow est une carte (catégories, recherche, vue liste), lancée en un clic, avec l’historique de chaque lancement et ses prérequis. Interface de conversation, ou interface classique avec <code>--classic</code>.</li>
             <li>Workflows en YAML, relisibles en revue de code, avec quatorze types d’étapes : agent, shell, python, fichiers, HTTP, validation humaine, saisie de texte, appel de serveur MCP…</li>
-            <li>Branches conditionnelles et variables d’une étape à l’autre.</li>
+            <li>Branches conditionnelles (<code>skip_if</code>, <code>next</code>, JsonLogic) et variables d’une étape à l’autre ; chaque lancement écrit dans <code>output/{{run_id}}/</code>.</li>
+            <li>Assistant : décrivez un workflow à CSAgent, au clavier ou à la voix, et relisez le diff avant de l’appliquer. L’historique tient dans un simple fichier, sans base de données.</li>
             <li>Saisie de texte au clavier ou à la voix : un bouton micro enregistre, CSAgent transcrit avec Whisper, et vous relisez et corrigez le texte avant de continuer.</li>
             <li>Client MCP intégré : un workflow appelle directement les outils d’un serveur MCP (local ou distant, clé tenue hors du fichier), sans passer par CSAgent. Exemple fourni : le football avec GOAL API.</li>
             <li>Vérification avant lancement (types inconnus, clés mal écrites, étapes manquantes), avec complétion dans VS Code.</li>
             <li>Interface graphique : graphe du workflow, détail de chaque étape, éditeur YAML, journal en direct, pensée pour l’accessibilité au clavier.</li>
-            <li>Exécutable unique sans Python à installer, pour Windows et Linux.</li>
+            <li>Exécutable unique sans Python à installer, pour Windows et Linux ; 33 workflows de démonstration fournis.</li>
             <li>Mode MCP : CSAgent peut lister, vérifier et lancer vos workflows.</li>
           </ul>
-          <dl class="facts" aria-label="Fiche du projet CSFlow">
+          <dl class="facts" aria-label="Fiche du projet FlowPortal">
             <dt>Langage</dt><dd>Python 3.10 ou plus récent</dd>
             <dt>Plateformes</dt><dd>Windows, Linux et WSL</dd>
             <dt>Licence</dt><dd>MIT</dd>
@@ -309,25 +311,25 @@ footer .small{color:#b4c0da;font-size:.95rem}
             <dt>Moteur d’IA</dt><dd>CSAgent, ou tout serveur compatible OpenAI via lui</dd>
           </dl>
           <div class="btns">
-            <a class="btn main" href="https://github.com/artydev/CSFlow">Dépôt GitHub</a>
-            <a class="btn alt" href="https://artydev.github.io/csflow-guide/">Guide de CSFlow</a>
+            <a class="btn main" href="https://github.com/artydev/FlowPortal">Dépôt GitHub</a>
+            <a class="btn alt" href="https://artydev.github.io/csflow-guide/">Guide de FlowPortal</a>
           </div>
         </div>
         <aside class="docs" aria-labelledby="d-csflow">
-          <h3 id="d-csflow">Documentation de CSFlow</h3>
+          <h3 id="d-csflow">Documentation de FlowPortal</h3>
           <ul>
-            <li><a href="https://artydev.github.io/csflow-guide/">Guide de présentation<small>Le site de CSFlow : fonctions, interface, cas d’usage.</small></a></li>
+            <li><a href="https://artydev.github.io/csflow-guide/">Guide de présentation<small>Le site de FlowPortal : fonctions, interface, cas d’usage.</small></a></li>
             <li><a href="https://artydev.github.io/csflow-guide/documentation_csflow.html">Documentation des mots-clés<small>Chaque mot-clé du workflow, avec des exemples vérifiés.</small></a></li>
             <li><a href="https://artydev.github.io/csflow-guide/video.html">Démonstration vidéo<small>Préparer un COPIL de bout en bout.</small></a></li>
-            <li><a href="https://github.com/artydev/CSFlow/blob/main/README.md">README<small>Démarrage rapide Windows et Linux, compilation, mode MCP.</small></a></li>
-            <li><a href="https://github.com/artydev/CSFlow/blob/main/REFERENCE.md">Référence du YAML<small>Tous les types d’étapes, paramètres et variables.</small></a></li>
-            <li><a href="https://github.com/artydev/CSFlow/blob/main/CSFLOW_LLM_GUIDE.md">Guide pour assistants IA<small>Pour qu’un LLM écrive des workflows corrects.</small></a></li>
-            <li><a href="https://github.com/artydev/CSFlow/blob/main/skills/csflow.md">Skill CSAgent « CSFlow Workflows »<small>La procédure que suit CSAgent pour lancer un workflow.</small></a></li>
-            <li><a href="https://github.com/artydev/CSFlow/tree/main/workflows">Workflows de démonstration<small>COPIL, bilan de santé Linux, signalements, candidatures, notes d’enquêteur dictées, correction automatique, revue de code.</small></a></li>
-            <li><a href="https://github.com/artydev/CSFlow/blob/main/csflow.schema.json">Schéma JSON<small>Autocomplétion et contrôle dans l’éditeur.</small></a></li>
-            <li><a href="https://github.com/artydev/CSFlow/tree/main/tests">Tests automatisés<small>Moteur, nœuds, schéma, serveur et client MCP.</small></a></li>
+            <li><a href="https://github.com/artydev/FlowPortal/blob/main/README.md">README<small>Démarrage rapide Windows et Linux, compilation, mode MCP.</small></a></li>
+            <li><a href="https://github.com/artydev/FlowPortal/blob/main/REFERENCE.md">Référence du YAML<small>Tous les types d’étapes, paramètres et variables.</small></a></li>
+            <li><a href="https://github.com/artydev/FlowPortal/blob/main/CSFLOW_LLM_GUIDE.md">Guide pour assistants IA<small>Pour qu’un LLM écrive des workflows corrects.</small></a></li>
+            <li><a href="https://github.com/artydev/FlowPortal/blob/main/skills/csflow.md">Skill CSAgent « CSFlow Workflows »<small>La procédure que suit CSAgent pour lancer un workflow.</small></a></li>
+            <li><a href="https://github.com/artydev/FlowPortal/tree/main/workflows">Workflows de démonstration<small>COPIL, bilan de santé Linux, signalements, candidatures, notes d’enquêteur dictées, correction automatique, revue de code.</small></a></li>
+            <li><a href="https://github.com/artydev/FlowPortal/blob/main/csflow.schema.json">Schéma JSON<small>Autocomplétion et contrôle dans l’éditeur.</small></a></li>
+            <li><a href="https://github.com/artydev/FlowPortal/tree/main/tests">Tests automatisés<small>Moteur, nœuds, schéma, serveur et client MCP.</small></a></li>
             <li><a href="https://github.com/artydev/csflow-guide">Dépôt du guide<small>Sources du site, de la documentation et de la vidéo.</small></a></li>
-            <li><a href="https://github.com/artydev/CSFlow/blob/main/LICENSE">Licence MIT</a></li>
+            <li><a href="https://github.com/artydev/FlowPortal/blob/main/LICENSE">Licence MIT</a></li>
           </ul>
         </aside>
       </div>
@@ -336,17 +338,17 @@ footer .small{color:#b4c0da;font-size:.95rem}
 
   <section id="ensemble" aria-labelledby="h-ensemble">
     <div class="wrap">
-      <h2 id="h-ensemble">Mieux ensemble : CSAgent pilote CSFlow</h2>
+      <h2 id="h-ensemble">Mieux ensemble : CSAgent pilote FlowPortal</h2>
       <p class="intro">Grâce au protocole MCP, vous demandez en langage naturel « lance le rapport de ventes » : CSAgent liste les workflows, en lance un et vous rend compte à chaque étape. Les étapes qui demandent de l’intelligence repartent vers CSAgent.</p>
       <ol class="chain" aria-label="Chaîne d’exécution en quatre maillons">
         <li class="u"><b>Vous</b><span>Demandez en français ou en anglais.</span></li>
         <li class="a"><b>CSAgent interactif</b><span>Vous demande la permission pour chaque appel.</span></li>
-        <li class="f"><b>CSFlow</b><span>Exécute le workflow étape par étape (mode MCP).</span></li>
+        <li class="f"><b>FlowPortal</b><span>Exécute le workflow étape par étape (mode MCP).</span></li>
         <li class="a"><b>CSAgent worker</b><span>Traite les étapes qui demandent du raisonnement.</span></li>
       </ol>
-      <p class="note"><strong>À savoir.</strong> Un workflow qui contient une validation humaine ou une saisie de texte n’est jamais lancé par l’agent : vous l’ouvrez dans l’interface de CSFlow et vous approuvez ou saisissez vous-même. Les étapes <code>shell</code> et <code>python</code> d’un workflow ne passent pas par le filtre de commandes de CSAgent : réservez ce mode à des workflows de confiance.</p>
+      <p class="note"><strong>À savoir.</strong> Un workflow qui contient une validation humaine ou une saisie de texte n’est jamais lancé par l’agent : vous l’ouvrez dans l’interface de FlowPortal et vous approuvez ou saisissez vous-même. Les étapes <code>shell</code> et <code>python</code> d’un workflow ne passent pas par le filtre de commandes de CSAgent : réservez ce mode à des workflows de confiance.</p>
       <div class="btns">
-        <a class="btn main" style="--c:var(--ink)" href="https://github.com/artydev/CSFlow/blob/main/README.md">Mode MCP : mise en route</a>
+        <a class="btn main" style="--c:var(--ink)" href="https://github.com/artydev/FlowPortal/blob/main/README.md">Mode MCP : mise en route</a>
       </div>
     </div>
   </section>
@@ -355,7 +357,7 @@ footer .small{color:#b4c0da;font-size:.95rem}
 <footer>
   <div class="wrap">
     <div>
-      <p class="small">Deux projets libres, en développement actif. CSAgent et CSFlow sont publiés sous licence MIT.</p>
+      <p class="small">Deux projets libres, en développement actif. CSAgent et FlowPortal sont publiés sous licence MIT.</p>
       <ul class="people" aria-label="Auteur et contributeur">
         <li>
           <img src="https://github.com/artydev.png?size=112" width="56" height="56" alt="" loading="lazy">
@@ -371,8 +373,8 @@ footer .small{color:#b4c0da;font-size:.95rem}
       <ul>
         <li><a href="https://github.com/artydev">Profil GitHub</a></li>
         <li><a href="https://github.com/artydev/CSAgent">Dépôt CSAgent</a></li>
-        <li><a href="https://github.com/artydev/CSFlow">Dépôt CSFlow</a></li>
-        <li><a href="https://github.com/artydev/csflow-guide">Dépôt du guide CSFlow</a></li>
+        <li><a href="https://github.com/artydev/FlowPortal">Dépôt FlowPortal</a></li>
+        <li><a href="https://github.com/artydev/csflow-guide">Dépôt du guide FlowPortal</a></li>
         <li><a href="#debut">Haut de page</a></li>
       </ul>
     </nav>
